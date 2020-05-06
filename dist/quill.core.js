@@ -1955,6 +1955,8 @@ var Emitter = function (_EventEmitter) {
         console.log(event.target);
         console.log('handleDOM node');
         console.log(node);
+        console.log('handleDOM event composedPath');
+        console.log(event.composedPath());
         if (event.target === node || node.contains(event.target)) {
           if (event.target === node) {
             console.log('Target equals node.');

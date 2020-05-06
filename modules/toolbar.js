@@ -16,13 +16,15 @@ class Toolbar extends Module {
       quill.container.parentNode.insertBefore(container, quill.container);
       this.container = container;
     } else if (typeof this.options.container === 'string') {
-      let shadowDomRootSelector = this.options.shadowDomRootSelector;
-      let containerSelector = this.options.container;
-      if (shadowDomRootSelector == null) {
-        this.container = document.querySelector(containerSelector);
-      } else {
-        this.container = this.findContainerInShadowDom(shadowDomRootSelector, containerSelector);
-      }
+      const rootDocument = quill.container.getRootNode();
+      this.container = rootDocument.querySelector(this.options.container);
+      // let shadowDomRootSelector = this.options.shadowDomRootSelector;
+      // let containerSelector = this.options.container;
+      // if (shadowDomRootSelector == null) {
+      //   this.container = document.querySelector(containerSelector);
+      // } else {
+      //   this.container = this.findContainerInShadowDom(shadowDomRootSelector, containerSelector);
+      // }
     } else {
       this.container = this.options.container;
     }
@@ -49,13 +51,13 @@ class Toolbar extends Module {
     });
   }
 
-  findContainerInShadowDom(shadowDomRootSelector, containerSelector) {
-    let shadowDomRoot = document.querySelector(shadowDomRootSelector);
-    if (shadowDomRoot == null || shadowDomRoot.shadowRoot == null) {
-      return debug.error('Shadow DOM root could not be found');
-    }
-    return shadowDomRoot.shadowRoot.querySelector(containerSelector);
-  }
+  // findContainerInShadowDom(shadowDomRootSelector, containerSelector) {
+  //   let shadowDomRoot = document.querySelector(shadowDomRootSelector);
+  //   if (shadowDomRoot == null || shadowDomRoot.shadowRoot == null) {
+  //     return debug.error('Shadow DOM root could not be found');
+  //   }
+  //   return shadowDomRoot.shadowRoot.querySelector(containerSelector);
+  // }
 
   addHandler(format, handler) {
     this.handlers[format] = handler;

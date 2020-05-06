@@ -1955,6 +1955,8 @@ var Emitter = function (_EventEmitter) {
         console.log(event.target);
         console.log('handleDOM node');
         console.log(node);
+        console.log('handleDOM event composedPath');
+        console.log(event.composedPath());
         if (event.target === node || node.contains(event.target)) {
           if (event.target === node) {
             console.log('Target equals node.');
@@ -10376,13 +10378,15 @@ var Toolbar = function (_Module) {
       quill.container.parentNode.insertBefore(container, quill.container);
       _this.container = container;
     } else if (typeof _this.options.container === 'string') {
-      var shadowDomRootSelector = _this.options.shadowDomRootSelector;
-      var containerSelector = _this.options.container;
-      if (shadowDomRootSelector == null) {
-        _this.container = document.querySelector(containerSelector);
-      } else {
-        _this.container = _this.findContainerInShadowDom(shadowDomRootSelector, containerSelector);
-      }
+      var rootDocument = quill.container.getRootNode();
+      _this.container = rootDocument.querySelector(_this.options.container);
+      // let shadowDomRootSelector = this.options.shadowDomRootSelector;
+      // let containerSelector = this.options.container;
+      // if (shadowDomRootSelector == null) {
+      //   this.container = document.querySelector(containerSelector);
+      // } else {
+      //   this.container = this.findContainerInShadowDom(shadowDomRootSelector, containerSelector);
+      // }
     } else {
       _this.container = _this.options.container;
     }
@@ -10416,16 +10420,15 @@ var Toolbar = function (_Module) {
     return _this;
   }
 
+  // findContainerInShadowDom(shadowDomRootSelector, containerSelector) {
+  //   let shadowDomRoot = document.querySelector(shadowDomRootSelector);
+  //   if (shadowDomRoot == null || shadowDomRoot.shadowRoot == null) {
+  //     return debug.error('Shadow DOM root could not be found');
+  //   }
+  //   return shadowDomRoot.shadowRoot.querySelector(containerSelector);
+  // }
+
   _createClass(Toolbar, [{
-    key: 'findContainerInShadowDom',
-    value: function findContainerInShadowDom(shadowDomRootSelector, containerSelector) {
-      var shadowDomRoot = document.querySelector(shadowDomRootSelector);
-      if (shadowDomRoot == null || shadowDomRoot.shadowRoot == null) {
-        return debug.error('Shadow DOM root could not be found');
-      }
-      return shadowDomRoot.shadowRoot.querySelector(containerSelector);
-    }
-  }, {
     key: 'addHandler',
     value: function addHandler(format, handler) {
       this.handlers[format] = handler;
