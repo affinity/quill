@@ -1950,6 +1950,11 @@ var Emitter = function (_EventEmitter) {
         var node = _ref.node,
             handler = _ref.handler;
 
+        console.log('Running handleDOM with event ' + event.type);
+        console.log('handleDOM target');
+        console.log(event.target);
+        console.log('handleDOM node');
+        console.log(node);
         if (event.target === node || node.contains(event.target)) {
           handler.apply(undefined, [event].concat(args));
         }
@@ -2935,6 +2940,7 @@ var Selection = function () {
     this.handleComposition();
     this.handleDragging();
     this.emitter.listenDOM('selectionchange', this.documentContext, function () {
+      console.log('handling selectionchange');
       if (!_this.mouseDown) {
         setTimeout(_this.update.bind(_this, _emitter4.default.sources.USER), 1);
       }
@@ -3001,9 +3007,11 @@ var Selection = function () {
       var _this3 = this;
 
       this.emitter.listenDOM('mousedown', this.documentContext, function () {
+        console.log('handling mousedown');
         _this3.mouseDown = true;
       });
       this.emitter.listenDOM('mouseup', this.documentContext, function () {
+        console.log('handling mouseup');
         _this3.mouseDown = false;
         _this3.update(_emitter4.default.sources.USER);
       });

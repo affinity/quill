@@ -28,6 +28,11 @@ class Emitter extends EventEmitter {
 
   handleDOM(event, ...args) {
     (this.listeners[event.type] || []).forEach(function({ node, handler }) {
+      console.log(`Running handleDOM with event ${event.type}`);
+      console.log('handleDOM target');
+      console.log(event.target);
+      console.log('handleDOM node');
+      console.log(node);
       if (event.target === node || node.contains(event.target)) {
         handler(event, ...args);
       }

@@ -29,6 +29,7 @@ class Selection {
     this.handleComposition();
     this.handleDragging();
     this.emitter.listenDOM('selectionchange', this.documentContext, () => {
+      console.log('handling selectionchange');
       if (!this.mouseDown) {
         setTimeout(this.update.bind(this, Emitter.sources.USER), 1);
       }
@@ -82,9 +83,11 @@ class Selection {
 
   handleDragging() {
     this.emitter.listenDOM('mousedown', this.documentContext, () => {
+      console.log('handling mousedown');
       this.mouseDown = true;
     });
     this.emitter.listenDOM('mouseup', this.documentContext, () => {
+      console.log('handling mouseup');
       this.mouseDown = false;
       this.update(Emitter.sources.USER);
     });
