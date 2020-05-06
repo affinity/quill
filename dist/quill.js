@@ -3000,10 +3000,10 @@ var Selection = function () {
     value: function handleDragging() {
       var _this3 = this;
 
-      this.emitter.listenDOM('mousedown', this.documentContext(), function () {
+      this.emitter.listenDOM('mousedown', this.documentContext, function () {
         _this3.mouseDown = true;
       });
-      this.emitter.listenDOM('mouseup', this.documentContext(), function () {
+      this.emitter.listenDOM('mouseup', this.documentContext, function () {
         _this3.mouseDown = false;
         _this3.update(_emitter4.default.sources.USER);
       });
