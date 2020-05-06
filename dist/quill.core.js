@@ -2934,6 +2934,7 @@ var Selection = function () {
     this.cursor = _parchment2.default.create('cursor', this);
     // savedRange is last non-null range
     this.lastRange = this.savedRange = new Range(0, 0);
+    this.documentContext = this.getDocumentContext();
     this.handleComposition();
     this.handleDragging();
     this.emitter.listenDOM('selectionchange', document, function () {
@@ -2973,6 +2974,12 @@ var Selection = function () {
   }
 
   _createClass(Selection, [{
+    key: 'getDocumentContext',
+    value: function getDocumentContext() {
+      var rootNode = this.root.getRootNode();
+      return rootNode instanceof ShadowRoot ? rootNode : document;
+    }
+  }, {
     key: 'handleComposition',
     value: function handleComposition() {
       var _this2 = this;
@@ -3109,7 +3116,7 @@ var Selection = function () {
   }, {
     key: 'getNativeRange',
     value: function getNativeRange() {
-      var selection = document.getSelection();
+      var selection = this.documentContext.getSelection();
       if (selection == null || selection.rangeCount <= 0) return null;
       var nativeRange = selection.getRangeAt(0);
       if (nativeRange == null) return null;
@@ -3128,7 +3135,7 @@ var Selection = function () {
   }, {
     key: 'hasFocus',
     value: function hasFocus() {
-      return document.activeElement === this.root;
+      return this.documentContext.activeElement === this.root;
     }
   }, {
     key: 'normalizedToRange',
@@ -3256,7 +3263,7 @@ var Selection = function () {
       if (startNode != null && (this.root.parentNode == null || startNode.parentNode == null || endNode.parentNode == null)) {
         return;
       }
-      var selection = document.getSelection();
+      var selection = this.documentContext.getSelection();
       if (selection == null) return;
       if (startNode != null) {
         if (!this.hasFocus()) this.root.focus();
