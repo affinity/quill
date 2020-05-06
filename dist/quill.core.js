@@ -1956,6 +1956,12 @@ var Emitter = function (_EventEmitter) {
         console.log('handleDOM node');
         console.log(node);
         if (event.target === node || node.contains(event.target)) {
+          if (event.target === node) {
+            console.log('Target equals node.');
+          } else if (node.contains(event.target)) {
+            console.log('Node contains target.');
+          }
+          console.log('Actually running handler for ' + event.type);
           handler.apply(undefined, [event].concat(args));
         }
       });
