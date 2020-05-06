@@ -16,6 +16,8 @@ class Toolbar extends Module {
       quill.container.parentNode.insertBefore(container, quill.container);
       this.container = container;
     } else if (typeof this.options.container === 'string') {
+      // If the container is within a Shadow DOM, search within the shadow root instead of
+      // the root document (document.querySelector does not pierce the Shadow DOM).
       const rootDocument = quill.container.getRootNode();
       this.container = rootDocument.querySelector(this.options.container);
     } else {

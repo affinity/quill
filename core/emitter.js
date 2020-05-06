@@ -33,20 +33,7 @@ class Emitter extends EventEmitter {
     // This should be equivalent to event.target in the normal, non Shadow DOM case.
     let target = event.composedPath()[0];
     (this.listeners[event.type] || []).forEach(function({ node, handler }) {
-      console.log(`Running handleDOM with event ${event.type}`);
-      console.log('handleDOM target');
-      console.log(target);
-      console.log('handleDOM node');
-      console.log(node);
-      console.log('handleDOM event composedPath');
-      console.log(event.composedPath());
       if (target === node || node.contains(target)) {
-        if (target === node) {
-          console.log('Target equals node.');
-        } else if (node.contains(target)) {
-          console.log('Node contains target.');
-        }
-        console.log(`Actually running handler for ${event.type}`);
         handler(event, ...args);
       }
     });

@@ -1955,20 +1955,7 @@ var Emitter = function (_EventEmitter) {
         var node = _ref.node,
             handler = _ref.handler;
 
-        console.log('Running handleDOM with event ' + event.type);
-        console.log('handleDOM target');
-        console.log(target);
-        console.log('handleDOM node');
-        console.log(node);
-        console.log('handleDOM event composedPath');
-        console.log(event.composedPath());
         if (target === node || node.contains(target)) {
-          if (target === node) {
-            console.log('Target equals node.');
-          } else if (node.contains(target)) {
-            console.log('Node contains target.');
-          }
-          console.log('Actually running handler for ' + event.type);
           handler.apply(undefined, [event].concat(args));
         }
       });
@@ -2955,7 +2942,6 @@ var Selection = function () {
     // The selectionchange event always fires with target equal to document, so we should
     // not listen with the documentContext.
     this.emitter.listenDOM('selectionchange', document, function () {
-      console.log('handling selectionchange');
       if (!_this.mouseDown) {
         setTimeout(_this.update.bind(_this, _emitter4.default.sources.USER), 1);
       }
@@ -3022,11 +3008,9 @@ var Selection = function () {
       var _this3 = this;
 
       this.emitter.listenDOM('mousedown', this.documentContext, function () {
-        console.log('handling mousedown');
         _this3.mouseDown = true;
       });
       this.emitter.listenDOM('mouseup', this.documentContext, function () {
-        console.log('handling mouseup');
         _this3.mouseDown = false;
         _this3.update(_emitter4.default.sources.USER);
       });
@@ -10385,6 +10369,8 @@ var Toolbar = function (_Module) {
       quill.container.parentNode.insertBefore(container, quill.container);
       _this.container = container;
     } else if (typeof _this.options.container === 'string') {
+      // If the container is within a Shadow DOM, search within the shadow root instead of
+      // the root document (document.querySelector does not pierce the Shadow DOM).
       var rootDocument = quill.container.getRootNode();
       _this.container = rootDocument.querySelector(_this.options.container);
     } else {
