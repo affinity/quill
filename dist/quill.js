@@ -1905,6 +1905,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var debug = (0, _logger2.default)('quill:events');
 
 var EVENTS = ['selectionchange', 'mousedown', 'mouseup', 'click'];
+var EMITTERS = [];
 
 EVENTS.forEach(function (eventName) {
   document.addEventListener(eventName, function () {
@@ -1912,13 +1913,8 @@ EVENTS.forEach(function (eventName) {
       args[_key] = arguments[_key];
     }
 
-    [].slice.call(document.querySelectorAll('.ql-container')).forEach(function (node) {
-      // TODO use WeakMap
-      if (node.__quill && node.__quill.emitter) {
-        var _node$__quill$emitter;
-
-        (_node$__quill$emitter = node.__quill.emitter).handleDOM.apply(_node$__quill$emitter, args);
-      }
+    EMITTERS.forEach(function (em) {
+      return em.handleDOM.apply(em, args);
     });
   });
 });
@@ -1933,6 +1929,7 @@ var Emitter = function (_EventEmitter) {
 
     _this.listeners = {};
     _this.on('error', debug.error);
+    EMITTERS.push(_this);
     return _this;
   }
 
@@ -2931,13 +2928,13 @@ var Selection = function () {
     this.composing = false;
     this.mouseDown = false;
     this.root = this.scroll.domNode;
+    this.documentContext = this.getDocumentContext();
     this.cursor = _parchment2.default.create('cursor', this);
     // savedRange is last non-null range
     this.lastRange = this.savedRange = new Range(0, 0);
-    this.documentContext = this.getDocumentContext();
     this.handleComposition();
     this.handleDragging();
-    this.emitter.listenDOM('selectionchange', document, function () {
+    this.emitter.listenDOM('selectionchange', this.documentContext, function () {
       if (!_this.mouseDown) {
         setTimeout(_this.update.bind(_this, _emitter4.default.sources.USER), 1);
       }
@@ -3003,10 +3000,10 @@ var Selection = function () {
     value: function handleDragging() {
       var _this3 = this;
 
-      this.emitter.listenDOM('mousedown', document.body, function () {
+      this.emitter.listenDOM('mousedown', this.documentContext(), function () {
         _this3.mouseDown = true;
       });
-      this.emitter.listenDOM('mouseup', document.body, function () {
+      this.emitter.listenDOM('mouseup', this.documentContext(), function () {
         _this3.mouseDown = false;
         _this3.update(_emitter4.default.sources.USER);
       });
