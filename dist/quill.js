@@ -10358,7 +10358,13 @@ var Toolbar = function (_Module) {
       quill.container.parentNode.insertBefore(container, quill.container);
       _this.container = container;
     } else if (typeof _this.options.container === 'string') {
-      _this.container = document.querySelector(_this.options.container);
+      var shadowDomRootSelector = _this.options.shadowDomRootSelector;
+      var containerSelector = _this.options.container;
+      if (shadowDomRootSelector == null) {
+        _this.container = document.querySelector(containerSelector);
+      } else {
+        _this.container = _this.findContainerInShadowDom(shadowDomRootSelector, containerSelector);
+      }
     } else {
       _this.container = _this.options.container;
     }
@@ -10393,6 +10399,15 @@ var Toolbar = function (_Module) {
   }
 
   _createClass(Toolbar, [{
+    key: 'findContainerInShadowDom',
+    value: function findContainerInShadowDom(shadowDomRootSelector, containerSelector) {
+      var shadowDomRoot = document.querySelector(shadowDomRootSelector);
+      if (shadowDomRoot == null || shadowDomRoot.shadowRoot == null) {
+        return debug.error('Shadow DOM root could not be found');
+      }
+      return shadowDomRoot.shadowRoot.querySelector(containerSelector);
+    }
+  }, {
     key: 'addHandler',
     value: function addHandler(format, handler) {
       this.handlers[format] = handler;
