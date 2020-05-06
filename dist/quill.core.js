@@ -1946,21 +1946,26 @@ var Emitter = function (_EventEmitter) {
         args[_key2 - 1] = arguments[_key2];
       }
 
+      // Events that are fired from within the Shadow DOM are re-targeted to the host of the
+      // shadow root. We take the first element of event.composedPath() to find the actual
+      // element that fired the event within the Shadow DOM (if the Shadow DOM is open).
+      // This should be equivalent to event.target in the normal, non Shadow DOM case.
+      var target = event.composedPath()[0];
       (this.listeners[event.type] || []).forEach(function (_ref) {
         var node = _ref.node,
             handler = _ref.handler;
 
         console.log('Running handleDOM with event ' + event.type);
         console.log('handleDOM target');
-        console.log(event.target);
+        console.log(target);
         console.log('handleDOM node');
         console.log(node);
         console.log('handleDOM event composedPath');
         console.log(event.composedPath());
-        if (event.target === node || node.contains(event.target)) {
-          if (event.target === node) {
+        if (target === node || node.contains(target)) {
+          if (target === node) {
             console.log('Target equals node.');
-          } else if (node.contains(event.target)) {
+          } else if (node.contains(target)) {
             console.log('Node contains target.');
           }
           console.log('Actually running handler for ' + event.type);
@@ -2947,7 +2952,9 @@ var Selection = function () {
     this.lastRange = this.savedRange = new Range(0, 0);
     this.handleComposition();
     this.handleDragging();
-    this.emitter.listenDOM('selectionchange', this.documentContext, function () {
+    // The selectionchange event always fires with target equal to document, so we should
+    // not listen with the documentContext.
+    this.emitter.listenDOM('selectionchange', document, function () {
       console.log('handling selectionchange');
       if (!_this.mouseDown) {
         setTimeout(_this.update.bind(_this, _emitter4.default.sources.USER), 1);

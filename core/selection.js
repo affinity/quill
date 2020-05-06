@@ -28,7 +28,9 @@ class Selection {
     this.lastRange = this.savedRange = new Range(0, 0);
     this.handleComposition();
     this.handleDragging();
-    this.emitter.listenDOM('selectionchange', this.documentContext, () => {
+    // The selectionchange event always fires with target equal to document, so we should
+    // not listen with the documentContext.
+    this.emitter.listenDOM('selectionchange', document, () => {
       console.log('handling selectionchange');
       if (!this.mouseDown) {
         setTimeout(this.update.bind(this, Emitter.sources.USER), 1);
