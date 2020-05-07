@@ -1950,7 +1950,8 @@ var Emitter = function (_EventEmitter) {
       // shadow root. We take the first element of event.composedPath() to find the actual
       // element that fired the event within the Shadow DOM (if the Shadow DOM is open).
       // This should be equivalent to event.target in the normal, non Shadow DOM case.
-      var target = event.composedPath()[0];
+      // let target = event.composedPath()[0];
+      var target = event.target;
       (this.listeners[event.type] || []).forEach(function (_ref) {
         var node = _ref.node,
             handler = _ref.handler;
@@ -3007,10 +3008,10 @@ var Selection = function () {
     value: function handleDragging() {
       var _this3 = this;
 
-      this.emitter.listenDOM('mousedown', this.documentContext, function () {
+      this.emitter.listenDOM('mousedown', document, function () {
         _this3.mouseDown = true;
       });
-      this.emitter.listenDOM('mouseup', this.documentContext, function () {
+      this.emitter.listenDOM('mouseup', document, function () {
         _this3.mouseDown = false;
         _this3.update(_emitter4.default.sources.USER);
       });

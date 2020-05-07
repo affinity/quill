@@ -83,10 +83,10 @@ class Selection {
   }
 
   handleDragging() {
-    this.emitter.listenDOM('mousedown', this.documentContext, () => {
+    this.emitter.listenDOM('mousedown', document, () => {
       this.mouseDown = true;
     });
-    this.emitter.listenDOM('mouseup', this.documentContext, () => {
+    this.emitter.listenDOM('mouseup', document, () => {
       this.mouseDown = false;
       this.update(Emitter.sources.USER);
     });

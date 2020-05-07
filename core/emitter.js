@@ -31,7 +31,8 @@ class Emitter extends EventEmitter {
     // shadow root. We take the first element of event.composedPath() to find the actual
     // element that fired the event within the Shadow DOM (if the Shadow DOM is open).
     // This should be equivalent to event.target in the normal, non Shadow DOM case.
-    let target = event.composedPath()[0];
+    // let target = event.composedPath()[0];
+    let target = event.target;
     (this.listeners[event.type] || []).forEach(function({ node, handler }) {
       if (target === node || node.contains(target)) {
         handler(event, ...args);
