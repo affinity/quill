@@ -367,6 +367,10 @@ Quill.imports = {
   'core/theme'  : Theme
 };
 
+function getDocumentContext(container) {
+  let rootNode = container.getRootNode();
+  return (rootNode instanceof ShadowRoot) ? rootNode : document;
+}
 
 function expandConfig(container, userConfig) {
   userConfig = extend(true, {
@@ -414,7 +418,7 @@ function expandConfig(container, userConfig) {
   userConfig = extend(true, {}, Quill.DEFAULTS, { modules: moduleConfig }, themeConfig, userConfig);
   ['bounds', 'container', 'scrollingContainer'].forEach(function(key) {
     if (typeof userConfig[key] === 'string') {
-      userConfig[key] = document.querySelector(userConfig[key]);
+      userConfig[key] = getDocumentContext(container).querySelector(userConfig[key]);
     }
   });
   userConfig.modules = Object.keys(userConfig.modules).reduce(function(config, name) {
