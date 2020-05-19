@@ -5570,14 +5570,12 @@ var Picker = function () {
     this.select.parentNode.insertBefore(this.container, this.select);
 
     this.label.addEventListener('mousedown', function () {
-      console.log('toggling picker from mousedown');
       _this.togglePicker();
     });
     this.label.addEventListener('keydown', function (event) {
       switch (event.keyCode) {
         // Allows the "Enter" key to open the picker
         case _keyboard2.default.keys.ENTER:
-          console.log('toggling picker from enter');
           _this.togglePicker();
           break;
 
@@ -5695,7 +5693,6 @@ var Picker = function () {
     value: function escape() {
       var _this5 = this;
 
-      console.log('closing from escape');
       // Close menu and return focus to trigger label
       this.close();
       // Need setTimeout for accessibility to ensure that the browser executes
@@ -5735,13 +5732,10 @@ var Picker = function () {
         this.label.removeAttribute('data-label');
       }
       if (trigger) {
-        console.log('closing from trigger');
         if (typeof Event === 'function') {
-          console.log('event function');
           this.select.dispatchEvent(new Event('change'));
         } else if ((typeof Event === 'undefined' ? 'undefined' : _typeof(Event)) === 'object') {
           // IE11
-          console.log('event object');
           var event = document.createEvent('Event');
           event.initEvent('change', true, true);
           this.select.dispatchEvent(event);
@@ -7077,16 +7071,20 @@ var BaseTheme = function (_Theme) {
 
     _this.documentContext = (0, _shadowDomUtils.getDocumentContext)(quill.root);
     var listener = function listener(e) {
-      if (!document.body.contains(quill.root)) {
+      // Events that are fired from within the Shadow DOM are re-targeted to the host of the
+      // shadow root. We take the first element of event.composedPath() to find the actual
+      // element that fired the event within the Shadow DOM (if the Shadow DOM is open).
+      // This should be equivalent to event.target in the normal, non Shadow DOM case.
+      var target = e.composedPath()[0];
+      if (!_this.documentContext.contains(quill.root)) {
         return document.body.removeEventListener('click', listener);
       }
-      if (_this.tooltip != null && !_this.tooltip.root.contains(e.target) && document.activeElement !== _this.tooltip.textbox && !_this.quill.hasFocus()) {
+      if (_this.tooltip != null && !_this.tooltip.root.contains(target) && _this.documentContext.activeElement !== _this.tooltip.textbox && !_this.quill.hasFocus()) {
         _this.tooltip.hide();
       }
       if (_this.pickers != null) {
         _this.pickers.forEach(function (picker) {
-          if (!picker.container.contains(e.target)) {
-            console.log('closing picker from themes base');
+          if (!picker.container.contains(target)) {
             picker.close();
           }
         });

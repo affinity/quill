@@ -32,17 +32,21 @@ class BaseTheme extends Theme {
     super(quill, options);
     this.documentContext = getDocumentContext(quill.root);
     let listener = (e) => {
-      if (!document.body.contains(quill.root)) {
+      // Events that are fired from within the Shadow DOM are re-targeted to the host of the
+      // shadow root. We take the first element of event.composedPath() to find the actual
+      // element that fired the event within the Shadow DOM (if the Shadow DOM is open).
+      // This should be equivalent to event.target in the normal, non Shadow DOM case.
+      let target = e.composedPath()[0];
+      if (!this.documentContext.contains(quill.root)) {
         return document.body.removeEventListener('click', listener);
       }
-      if (this.tooltip != null && !this.tooltip.root.contains(e.target) &&
-          document.activeElement !== this.tooltip.textbox && !this.quill.hasFocus()) {
+      if (this.tooltip != null && !this.tooltip.root.contains(target) &&
+          this.documentContext.activeElement !== this.tooltip.textbox && !this.quill.hasFocus()) {
         this.tooltip.hide();
       }
       if (this.pickers != null) {
         this.pickers.forEach(function(picker) {
-          if (!picker.container.contains(e.target)) {
-            console.log('closing picker from themes base');
+          if (!picker.container.contains(target)) {
             picker.close();
           }
         });
