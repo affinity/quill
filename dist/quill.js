@@ -8080,7 +8080,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 exports.createGetRootNodePolyfill = createGetRootNodePolyfill;
 function createGetRootNodePolyfill(n) {
   if (!n.getRootNode) {
-    n.getRootNode = getRootNode;
+    n.getRootNode = function (opt) {
+      var composed = (typeof opt === 'undefined' ? 'undefined' : _typeof(opt)) === 'object' && Boolean(opt.composed);
+
+      return composed ? getShadowIncludingRoot(this) : getRoot(this);
+    };
   }
 }
 
@@ -8089,11 +8093,11 @@ function createGetRootNodePolyfill(n) {
  *
  * Taken from: https://github.com/foobarhq/get-root-node-polyfill/blob/master/index.js
  */
-function getRootNode(opt) {
-  var composed = (typeof opt === 'undefined' ? 'undefined' : _typeof(opt)) === 'object' && Boolean(opt.composed);
-
-  return composed ? getShadowIncludingRoot(this) : getRoot(this);
-}
+// function getRootNode(opt) {
+//   var composed = typeof opt === 'object' && Boolean(opt.composed);
+//
+//   return composed ? getShadowIncludingRoot(this) : getRoot(this);
+// }
 
 function getShadowIncludingRoot(node) {
   var root = getRoot(node);
