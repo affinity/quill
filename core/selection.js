@@ -3,7 +3,7 @@ import clone from 'clone';
 import equal from 'deep-equal';
 import Emitter from './emitter';
 import logger from './logger';
-import { isShadowRoot } from './get-root-node-polyfill.js'
+import { getDocumentContext } from './shadow-dom-utils.js'
 
 let debug = logger('quill:selection');
 
@@ -23,7 +23,7 @@ class Selection {
     this.composing = false;
     this.mouseDown = false;
     this.root = this.scroll.domNode;
-    this.documentContext = this.getDocumentContext();
+    this.documentContext = getDocumentContext(this.root);
     this.cursor = Parchment.create('cursor', this);
     // savedRange is last non-null range
     this.lastRange = this.savedRange = new Range(0, 0);
@@ -60,11 +60,6 @@ class Selection {
       }
     });
     this.update(Emitter.sources.SILENT);
-  }
-
-  getDocumentContext() {
-    let rootNode = this.root.getRootNode();
-    return (isShadowRoot(rootNode)) ? rootNode : document;
   }
 
   handleComposition() {

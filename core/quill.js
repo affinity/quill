@@ -8,7 +8,7 @@ import Selection, { Range } from './selection';
 import extend from 'extend';
 import logger from './logger';
 import Theme from './theme';
-import { isShadowRoot } from './get-root-node-polyfill.js'
+import { getDocumentContext } from './shadow-dom-utils.js'
 
 let debug = logger('quill');
 
@@ -367,11 +367,6 @@ Quill.imports = {
   'core/module' : Module,
   'core/theme'  : Theme
 };
-
-function getDocumentContext(container) {
-  let rootNode = container.getRootNode();
-  return (isShadowRoot(rootNode)) ? rootNode : document;
-}
 
 function expandConfig(container, userConfig) {
   userConfig = extend(true, {

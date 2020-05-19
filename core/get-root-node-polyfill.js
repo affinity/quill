@@ -1,3 +1,5 @@
+import { isShadowRoot } from './shadow-dom-utils.js'
+
 export function createGetRootNodePolyfill(n) {
   if (!n.getRootNode) {
     n.getRootNode = getRootNode;
@@ -31,10 +33,4 @@ function getRoot(node) {
   }
 
   return node;
-}
-
-export function isShadowRoot(node) {
-  // We don't use 'instanceof ShadowRoot', since ShadowRoot isn't supported in legacy
-  // Edge.
-  return node.nodeName === '#document-fragment' && node.constructor.name === 'ShadowRoot';
 }

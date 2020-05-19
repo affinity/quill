@@ -7,6 +7,7 @@ import ColorPicker from '../ui/color-picker';
 import IconPicker from '../ui/icon-picker';
 import Picker from '../ui/picker';
 import Tooltip from '../ui/tooltip';
+import { getDocumentContext } from '../core/shadow-dom-utils.js'
 
 
 const ALIGNS = [ false, 'center', 'right', 'justify' ];
@@ -29,6 +30,7 @@ const SIZES = [ 'small', false, 'large', 'huge' ];
 class BaseTheme extends Theme {
   constructor(quill, options) {
     super(quill, options);
+    this.documentContext = getDocumentContext(quill.root);
     let listener = (e) => {
       if (!document.body.contains(quill.root)) {
         return document.body.removeEventListener('click', listener);
@@ -46,7 +48,7 @@ class BaseTheme extends Theme {
         });
       }
     };
-    quill.emitter.listenDOM('click', document.body, listener);
+    quill.emitter.listenDOM('click', this.documentContext, listener);
   }
 
   addModule(name) {
