@@ -3,6 +3,7 @@ import clone from 'clone';
 import equal from 'deep-equal';
 import Emitter from './emitter';
 import logger from './logger';
+import { isShadowRoot } from './get-root-node-polyfill.js'
 
 let debug = logger('quill:selection');
 
@@ -63,7 +64,7 @@ class Selection {
 
   getDocumentContext() {
     let rootNode = this.root.getRootNode();
-    return (rootNode instanceof ShadowRoot) ? rootNode : document;
+    return (isShadowRoot(rootNode)) ? rootNode : document;
   }
 
   handleComposition() {
