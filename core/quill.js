@@ -368,6 +368,7 @@ Quill.imports = {
 };
 
 function getDocumentContext(container) {
+  console.log(Object.prototype.toString.apply(container));
   let rootNode = container.getRootNode();
   return (rootNode instanceof ShadowRoot) ? rootNode : document;
 }
