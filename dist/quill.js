@@ -3895,6 +3895,8 @@ function getRoot(node) {
 }
 
 function isShadowRoot(node) {
+  // We don't use 'instanceof ShadowRoot', since ShadowRoot isn't supported in legacy
+  // Edge.
   return node.nodeName === '#document-fragment' && node.constructor.name === 'ShadowRoot';
 }
 
@@ -5735,6 +5737,7 @@ var Picker = function () {
     value: function escape() {
       var _this5 = this;
 
+      console.log('closing from escape');
       // Close menu and return focus to trigger label
       this.close();
       // Need setTimeout for accessibility to ensure that the browser executes
@@ -5774,10 +5777,13 @@ var Picker = function () {
         this.label.removeAttribute('data-label');
       }
       if (trigger) {
+        console.log('closing from trigger');
         if (typeof Event === 'function') {
+          console.log('event function');
           this.select.dispatchEvent(new Event('change'));
         } else if ((typeof Event === 'undefined' ? 'undefined' : _typeof(Event)) === 'object') {
           // IE11
+          console.log('event object');
           var event = document.createEvent('Event');
           event.initEvent('change', true, true);
           this.select.dispatchEvent(event);

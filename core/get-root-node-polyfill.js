@@ -34,5 +34,7 @@ function getRoot(node) {
 }
 
 export function isShadowRoot(node) {
+  // We don't use 'instanceof ShadowRoot', since ShadowRoot isn't supported in legacy
+  // Edge.
   return node.nodeName === '#document-fragment' && node.constructor.name === 'ShadowRoot';
 }
