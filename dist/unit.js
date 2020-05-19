@@ -5614,12 +5614,14 @@ var Picker = function () {
     this.select.parentNode.insertBefore(this.container, this.select);
 
     this.label.addEventListener('mousedown', function () {
+      console.log('toggling picker from mousedown');
       _this.togglePicker();
     });
     this.label.addEventListener('keydown', function (event) {
       switch (event.keyCode) {
         // Allows the "Enter" key to open the picker
         case _keyboard2.default.keys.ENTER:
+          console.log('toggling picker from enter');
           _this.togglePicker();
           break;
 
@@ -7125,6 +7127,7 @@ var BaseTheme = function (_Theme) {
       if (_this.pickers != null) {
         _this.pickers.forEach(function (picker) {
           if (!picker.container.contains(e.target)) {
+            console.log('closing picker from themes base');
             picker.close();
           }
         });

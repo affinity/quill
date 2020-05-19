@@ -40,6 +40,7 @@ class BaseTheme extends Theme {
       if (this.pickers != null) {
         this.pickers.forEach(function(picker) {
           if (!picker.container.contains(e.target)) {
+            console.log('closing picker from themes base');
             picker.close();
           }
         });

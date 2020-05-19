@@ -16,12 +16,14 @@ class Picker {
     this.select.parentNode.insertBefore(this.container, this.select);
 
     this.label.addEventListener('mousedown', () => {
+      console.log('toggling picker from mousedown');
       this.togglePicker();
     });
     this.label.addEventListener('keydown', (event) => {
       switch(event.keyCode) {
         // Allows the "Enter" key to open the picker
         case Keyboard.keys.ENTER:
+          console.log('toggling picker from enter');
           this.togglePicker();
           break;
 
