@@ -76,7 +76,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 131);
+/******/ 	return __webpack_require__(__webpack_require__.s = 133);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -282,7 +282,7 @@ exports.register = register;
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var diff = __webpack_require__(60);
+var diff = __webpack_require__(62);
 var equal = __webpack_require__(11);
 var extend = __webpack_require__(3);
 var op = __webpack_require__(22);
@@ -1891,7 +1891,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _eventemitter = __webpack_require__(75);
+var _eventemitter = __webpack_require__(77);
 
 var _eventemitter2 = _interopRequireDefault(_eventemitter);
 
@@ -2063,11 +2063,11 @@ exports.default = namespace;
 /***/ (function(module, exports, __webpack_require__) {
 
 var objectKeys = __webpack_require__(36);
-var isArguments = __webpack_require__(62);
-var is = __webpack_require__(63);
-var isRegex = __webpack_require__(70);
-var flags = __webpack_require__(72);
-var isDate = __webpack_require__(74);
+var isArguments = __webpack_require__(64);
+var is = __webpack_require__(65);
+var isRegex = __webpack_require__(72);
+var flags = __webpack_require__(74);
+var isDate = __webpack_require__(76);
 
 var getTime = Date.prototype.getTime;
 
@@ -3847,7 +3847,7 @@ exports.default = LeafBlot;
 "use strict";
 
 
-var implementation = __webpack_require__(64);
+var implementation = __webpack_require__(66);
 
 module.exports = Function.prototype.bind || implementation;
 
@@ -5477,7 +5477,7 @@ var _text = __webpack_require__(7);
 
 var _text2 = _interopRequireDefault(_text);
 
-var _clipboard = __webpack_require__(76);
+var _clipboard = __webpack_require__(78);
 
 var _clipboard2 = _interopRequireDefault(_clipboard);
 
@@ -5888,7 +5888,7 @@ var slice = Array.prototype.slice;
 var isArgs = __webpack_require__(37);
 
 var origKeys = Object.keys;
-var keysShim = origKeys ? function keys(o) { return origKeys(o); } : __webpack_require__(61);
+var keysShim = origKeys ? function keys(o) { return origKeys(o); } : __webpack_require__(63);
 
 var originalKeys = Object.keys;
 
@@ -5949,7 +5949,7 @@ module.exports = function isArguments(value) {
 
 var bind = __webpack_require__(21);
 
-var GetIntrinsic = __webpack_require__(65);
+var GetIntrinsic = __webpack_require__(67);
 
 var $Function = GetIntrinsic('%Function%');
 var $apply = $Function.apply;
@@ -7240,6 +7240,10 @@ exports.default = TextBlot;
 "use strict";
 
 
+var _composedPathPolyfill = __webpack_require__(60);
+
+var _getRootNodePolyfill = __webpack_require__(61);
+
 var elem = document.createElement('div');
 elem.classList.toggle('test-class', false);
 if (elem.classList.contains('test-class')) {
@@ -7304,8 +7308,97 @@ document.addEventListener("DOMContentLoaded", function () {
   document.execCommand("autoUrlDetect", false, false);
 });
 
+(0, _getRootNodePolyfill.createGetRootNodePolyfill)(Node.prototype);
+(0, _composedPathPolyfill.createComposedPathPolyfill)(Event.prototype, document, window);
+
 /***/ }),
 /* 60 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.createComposedPathPolyfill = createComposedPathPolyfill;
+/*
+ * This creates a polyfill for Event.composedPath, which isn't implemented on legacy Edge.
+ *
+ * Taken from: https://gist.github.com/rockinghelvetica/00b9f7b5c97a16d3de75ba99192ff05c
+ */
+function createComposedPathPolyfill(e, d, w) {
+  if (!e.composedPath) {
+    e.composedPath = function () {
+      if (this.path) return this.path;
+      var target = this.target;
+
+      this.path = [];
+      while (target.parentNode !== null) {
+        this.path.push(target);
+        target = target.parentNode;
+      }
+      this.path.push(d, w);
+      return this.path;
+    };
+  }
+}
+
+/***/ }),
+/* 61 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+exports.createGetRootNodePolyfill = createGetRootNodePolyfill;
+function createGetRootNodePolyfill(n) {
+  if (!n.getRootNode) {
+    n.getRootNode = getRootNode;
+  }
+}
+
+/*
+ * Polyfill for Node.getRootNode, which isn't implemented on legacy Edge.
+ *
+ * Taken from: https://github.com/foobarhq/get-root-node-polyfill/blob/master/index.js
+ */
+function getRootNode(opt) {
+  var composed = (typeof opt === 'undefined' ? 'undefined' : _typeof(opt)) === 'object' && Boolean(opt.composed);
+
+  return composed ? getShadowIncludingRoot(this) : getRoot(this);
+}
+
+function getShadowIncludingRoot(node) {
+  var root = getRoot(node);
+
+  if (isShadowRoot(root)) {
+    return getShadowIncludingRoot(root.host);
+  }
+
+  return root;
+}
+
+function getRoot(node) {
+  if (node.parentNode != null) {
+    return getRoot(node.parentNode);
+  }
+
+  return node;
+}
+
+function isShadowRoot(node) {
+  return node.nodeName === '#document-fragment' && node.constructor.name === 'ShadowRoot';
+}
+
+/***/ }),
+/* 62 */
 /***/ (function(module, exports) {
 
 /**
@@ -8049,7 +8142,7 @@ function merge_tuples (diffs, start, length) {
 
 
 /***/ }),
-/* 61 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8178,7 +8271,7 @@ module.exports = keysShim;
 
 
 /***/ }),
-/* 62 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8216,7 +8309,7 @@ module.exports = supportsStandardArguments ? isStandardArguments : isLegacyArgum
 
 
 /***/ }),
-/* 63 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8227,7 +8320,7 @@ var callBind = __webpack_require__(38);
 
 var implementation = __webpack_require__(39);
 var getPolyfill = __webpack_require__(40);
-var shim = __webpack_require__(69);
+var shim = __webpack_require__(71);
 
 var polyfill = callBind(getPolyfill(), Object);
 
@@ -8241,7 +8334,7 @@ module.exports = polyfill;
 
 
 /***/ }),
-/* 64 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8300,7 +8393,7 @@ module.exports = function bind(that) {
 
 
 /***/ }),
-/* 65 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8342,7 +8435,7 @@ var ThrowTypeError = $gOPD
 	}())
 	: throwTypeError;
 
-var hasSymbols = __webpack_require__(66)();
+var hasSymbols = __webpack_require__(68)();
 
 var getProto = Object.getPrototypeOf || function (x) { return x.__proto__; }; // eslint-disable-line no-proto
 
@@ -8525,14 +8618,14 @@ module.exports = function GetIntrinsic(name, allowMissing) {
 
 
 /***/ }),
-/* 66 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global) {
 
 var origSymbol = global.Symbol;
-var hasSymbolSham = __webpack_require__(68);
+var hasSymbolSham = __webpack_require__(70);
 
 module.exports = function hasNativeSymbols() {
 	if (typeof origSymbol !== 'function') { return false; }
@@ -8543,10 +8636,10 @@ module.exports = function hasNativeSymbols() {
 	return hasSymbolSham();
 };
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(67)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(69)))
 
 /***/ }),
-/* 67 */
+/* 69 */
 /***/ (function(module, exports) {
 
 var g;
@@ -8573,7 +8666,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 68 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8622,7 +8715,7 @@ module.exports = function hasSymbols() {
 
 
 /***/ }),
-/* 69 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8643,13 +8736,13 @@ module.exports = function shimObjectIs() {
 
 
 /***/ }),
-/* 70 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var has = __webpack_require__(71);
+var has = __webpack_require__(73);
 var regexExec = RegExp.prototype.exec;
 var gOPD = Object.getOwnPropertyDescriptor;
 
@@ -8689,7 +8782,7 @@ module.exports = function isRegex(value) {
 
 
 /***/ }),
-/* 71 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8701,7 +8794,7 @@ module.exports = bind.call(Function.call, Object.prototype.hasOwnProperty);
 
 
 /***/ }),
-/* 72 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8712,7 +8805,7 @@ var callBind = __webpack_require__(38);
 
 var implementation = __webpack_require__(41);
 var getPolyfill = __webpack_require__(42);
-var shim = __webpack_require__(73);
+var shim = __webpack_require__(75);
 
 var flagsBound = callBind(implementation);
 
@@ -8726,7 +8819,7 @@ module.exports = flagsBound;
 
 
 /***/ }),
-/* 73 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8759,7 +8852,7 @@ module.exports = function shimFlags() {
 
 
 /***/ }),
-/* 74 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8788,7 +8881,7 @@ module.exports = function isDateObject(value) {
 
 
 /***/ }),
-/* 75 */
+/* 77 */
 /***/ (function(module, exports) {
 
 'use strict';
@@ -9105,7 +9198,7 @@ if ('undefined' !== typeof module) {
 
 
 /***/ }),
-/* 76 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9529,8 +9622,6 @@ exports.matchSpacing = matchSpacing;
 exports.matchText = matchText;
 
 /***/ }),
-/* 77 */,
-/* 78 */,
 /* 79 */,
 /* 80 */,
 /* 81 */,
@@ -9583,7 +9674,9 @@ exports.matchText = matchText;
 /* 128 */,
 /* 129 */,
 /* 130 */,
-/* 131 */
+/* 131 */,
+/* 132 */,
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(31);

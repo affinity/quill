@@ -61,3 +61,9 @@ document.addEventListener("DOMContentLoaded", function() {
   // Disable automatic linkifying in IE11
   document.execCommand("autoUrlDetect", false, false);
 });
+
+import { createComposedPathPolyfill } from './composed-path-polyfill';
+import { createGetRootNodePolyfill } from './get-root-node-polyfill';
+
+createGetRootNodePolyfill(Node.prototype);
+createComposedPathPolyfill(Event.prototype, document, window);
