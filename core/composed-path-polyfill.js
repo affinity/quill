@@ -10,7 +10,7 @@ export function createComposedPathPolyfill(e, d, w) {
       var target = this.target;
 
       this.path = [];
-      while (target.parentNode !== null) {
+      while (target && target.parentNode !== null) {
         this.path.push(target);
         target = target.parentNode;
       }
